@@ -20,6 +20,8 @@ import com.mapbox.rctmgl.RCTMGLPackage;
 import com.oblador.keychain.KeychainPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.pusherman.networkinfo.RNNetworkInfoPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import io.sentry.RNSentryPackage;
 
@@ -41,10 +43,12 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.asList(
         new MainReactPackage(),
         // please keep these sorted alphabetically
+        new AsyncStoragePackage(),
         new CalendarEventsPackage(),
         new CustomTabsPackage(),
         new KeychainPackage(),
         new LinearGradientPackage(),
+        new NetInfoPackage(),
         new RCTMGLPackage(),
         new ReactNativeOneSignalPackage(),
         new ReactNativeRestartPackage(),
