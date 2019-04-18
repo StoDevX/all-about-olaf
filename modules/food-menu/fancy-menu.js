@@ -21,6 +21,14 @@ import {FilterMenuToolbar as FilterToolbar} from './filter-menu-toolbar'
 import {FoodItemRow} from './food-item-row'
 import {chooseMeal} from './lib/choose-meal'
 import {buildFilters} from './lib/build-filters'
+import filter from 'lodash/filter'
+import words from 'lodash/words'
+import uniq from 'lodash/uniq'
+import map from 'lodash/map'
+import fromPairs from 'lodash/fromPairs'
+import deburr from 'lodash/deburr'
+import {AnimatedSearchBar} from '@frogpond/searchbar'
+import {white} from '@frogpond/colors'
 
 type ReactProps = {
 	cafeMessage?: ?string,
@@ -45,6 +53,9 @@ type Props = ReactProps & DefaultProps
 type State = {
 	filters: Array<FilterType>,
 	cachedFoodItems: ?MenuItemContainerType,
+	typedQuery: string,
+	searchQuery: string,
+	isSearchbarActive: boolean,
 }
 
 const styles = StyleSheet.create({
@@ -67,6 +78,9 @@ export class FancyMenu extends React.Component<Props, State> {
 	state = {
 		filters: [],
 		cachedFoodItems: null,
+		typedQuery: '',
+		searchQuery: '',
+		isSearchbarActive: false,
 	}
 
 	static getDerivedStateFromProps(props: Props, prevState: State) {
@@ -160,18 +174,59 @@ export class FancyMenu extends React.Component<Props, State> {
 
 	keyExtractor = (item: MenuItem, index: number) => index.toString()
 
+	itemToArray = (item: MenuItem) =>
+		uniq([
+			...words(deburr(item.label.toLowerCase())),
+			...words(deburr(item.description.toLowerCase())),
+		])
+
+	handleSearchSubmit = () => {
+		this.setState(state => ({searchQuery: state.typedQuery}))
+	}
+
+	handleSearchCancel = () => {
+		this.setState(state => ({
+			typedQuery: state.searchQuery,
+			isSearchbarActive: false,
+		}))
+	}
+
+	handleSearchChange = (value: string) => {
+		this.setState(() => ({typedQuery: value}))
+
+		if (value === '') {
+			this.setState(() => ({searchQuery: value}))
+		}
+	}
+
+	handleSearchFocus = () => {
+		this.setState(() => ({isSearchbarActive: true}))
+	}
+
 	render() {
 		let {now, meals, cafeMessage, applyFilters, foodItems} = this.props
-		let {filters} = this.state
+		let {filters, typedQuery, searchQuery, isSearchbarActive} = this.state
 
 		let {label: mealName, stations} = chooseMeal(meals, filters, now)
 		let anyFiltersEnabled = filters.some(f => f.enabled)
 		let specialsFilterEnabled = this.areSpecialsFiltered(filters)
+
+		let results = foodItems
+		if (searchQuery) {
+			results = filter(foodItems, item =>
+				this.itemToArray(item).some(entry =>
+					entry.startsWith(deburr(searchQuery.toLowerCase())),
+				),
+			)
+		}
+
+		results = fromPairs(map(results, item => [item.id, item]))
+
 		let groupedMenuData = this.groupMenuData({
 			stations,
 			filters,
 			applyFilters,
-			foodItems,
+			foodItems: results,
 		})
 
 		let message = 'No items to show.'
@@ -190,13 +245,26 @@ export class FancyMenu extends React.Component<Props, State> {
 		const isOpen = Object.keys(foodItems).length !== 0
 
 		let header = (
-			<FilterToolbar
-				date={now}
-				filters={filters}
-				isOpen={isOpen}
-				onPopoverDismiss={this.updateFilter}
-				title={mealName}
-			/>
+			<>
+				<AnimatedSearchBar
+					active={isSearchbarActive}
+					onCancel={this.handleSearchCancel}
+					onChange={this.handleSearchChange}
+					onFocus={this.handleSearchFocus}
+					onSubmit={this.handleSearchSubmit}
+					textFieldBackgroundColor={white}
+					value={typedQuery}
+				/>
+				{!typedQuery ? (
+					<FilterToolbar
+						date={now}
+						filters={filters}
+						isOpen={isOpen}
+						onPopoverDismiss={this.updateFilter}
+						title={mealName}
+					/>
+				) : null}
+			</>
 		)
 
 		return (
