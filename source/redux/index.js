@@ -1,7 +1,7 @@
 // @flow
 
 import {createStore, applyMiddleware, combineReducers, type Store} from 'redux'
-import {createLogger} from 'redux-logger'
+//import {createLogger} from 'redux-logger'
 import reduxPromise from 'redux-promise'
 import reduxThunk from 'redux-thunk'
 
@@ -35,18 +35,18 @@ export function makeStore(): Store<*, *, *> {
 
 	let middleware = [reduxPromise, reduxThunk]
 
-	if (__DEV__) {
-		let logger = createLogger({
-			collapsed: true,
-			duration: true,
-			// avoid logging the (large) course data state twice per action
-			stateTransformer: (state) => ({
-				...state,
-				courses: {...state.courses, allCourses: '<omitted>'},
-			}),
-		})
-		middleware.push(logger)
-	}
+	// if (__DEV__) {
+	// 	let logger = createLogger({
+	// 		collapsed: true,
+	// 		duration: true,
+	// 		// avoid logging the (large) course data state twice per action
+	// 		stateTransformer: (state) => ({
+	// 			...state,
+	// 			courses: {...state.courses, allCourses: '<omitted>'},
+	// 		}),
+	// 	})
+	// 	middleware.push(logger)
+	// }
 
 	return createStore(aao, applyMiddleware(...middleware))
 }
