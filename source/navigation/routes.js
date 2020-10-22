@@ -15,6 +15,7 @@ import {
 	DictionaryEditorView,
 	DictionaryView,
 } from '../views/dictionary'
+import {DirectoryView, DirectoryDetailView} from '../views/directory'
 import {FaqView} from '../views/faqs'
 import {HelpView} from '../views/help'
 import {
@@ -72,6 +73,8 @@ export const routes = {
 	DictionaryDetailView: {screen: DictionaryDetailView},
 	DictionaryView: {screen: DictionaryView},
 	DictionaryEditorView: {screen: DictionaryEditorView},
+	DirectoryView: {screen: DirectoryView},
+	DirectoryDetailView: {screen: DirectoryDetailView},
 	EventDetailView: {screen: EventDetailView},
 	FaqView: {screen: FaqView},
 	HelpView: {screen: HelpView},
