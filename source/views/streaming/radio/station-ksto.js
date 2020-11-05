@@ -28,6 +28,7 @@ export class KstoStationView extends React.Component<TopLevelViewPropsType> {
 	static navigationOptions = {
 		tabBarLabel: 'KSTO',
 		tabBarIcon: TabBarIcon('radio'),
+		tabBarTestID: 'button-ksto',
 	}
 
 	render() {
@@ -46,6 +47,7 @@ export class KstoStationView extends React.Component<TopLevelViewPropsType> {
 					}}
 					stationName="KSTO 93.1 FM"
 					stationNumber="+15077863602"
+					testID="screen-streaming-radio-ksto"
 					title="St. Olaf College Radio"
 				/>
 			</ThemeProvider>

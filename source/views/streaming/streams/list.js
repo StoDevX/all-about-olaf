@@ -128,6 +128,7 @@ export class StreamListView extends React.PureComponent<Props, State> {
 				renderSectionHeader={this.renderSectionHeader}
 				sections={(this.state.streams: any)}
 				style={styles.listContainer}
+				testID="stream-list"
 			/>
 		)
 	}
